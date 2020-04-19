@@ -1,0 +1,16 @@
+---
+- name: Configure the hostname
+  hostname:
+    name: "{{ hostname_fqdn }}"
+  register: hostname
+
+- name: Update hosts file with new name
+  lineinfile:
+    path: /etc/hosts
+    line: "127.0.0.1 {{ hostname_fqdn }} {{ hostname_fqdn.split('.')[0] }} localhost"
+    regexp: '^127\.0\.0\.1*'
+  when: hostname is changed
+
+- name: Update facts with new hostname
+  action: setup
+  when: hostname is changed

@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    hostname_fqdn: molecule.testdomain
+
+  roles:
+    - role: ansible-role-hostname
