@@ -1,5 +1,7 @@
 # Ansible role: Hostname
 
+![Molecule Test](https://github.com/crgwilson/ansible-role-hostname/workflows/Molecule%20Test/badge.svg)
+
 Configure the hostname of a linux host
 
 * Set the hostname via `hostnamectl`
