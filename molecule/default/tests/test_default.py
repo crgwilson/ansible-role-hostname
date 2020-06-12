@@ -13,4 +13,4 @@ def test_default_hostname(host):
 
 def test_default_hosts_file(host):
     f = host.file('/etc/hosts')
-    assert f.contains('127.0.0.1 molecule.testdomain molecule localhost')
+    assert f.contains('127.0.0.1 localhost')

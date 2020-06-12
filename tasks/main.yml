@@ -4,12 +4,30 @@
     name: "{{ hostname_fqdn }}"
   register: hostname
 
-- name: Update hosts file with new name
+- name: Ensure localhost resolves properly
   lineinfile:
     path: /etc/hosts
-    line: "127.0.0.1 {{ hostname_fqdn }} {{ hostname_fqdn.split('.')[0] }} localhost"
+    line: "127.0.0.1 localhost"
     regexp: '^127\.0\.0\.1*'
-  when: hostname is changed
+
+- name: Ensure there is only one loopback line
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.0\.1\s+(?!localhost)'
+    state: absent
+
+- name: Add 127.0.1.1 for debian
+  lineinfile:
+    path: /etc/hosts
+    line: "127.0.1.1 {{ hostname_fqdn }} {{ hostname_fqdn.split('.')[0] }}"
+    regexp: '^127\.0\.1\.1*'
+  when: ansible_os_family == 'Debian'
+
+- name: Ensure the hostname resolves properly
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ ansible_default_ipv4.address }} {{ hostname_fqdn }} {{ hostname_fqdn.split('.')[0] }}"
+    regexp: "^{{ ansible_default_ipv4.address }}*"
 
 - name: Update facts with new hostname
   action: setup
